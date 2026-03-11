@@ -102,7 +102,7 @@ O diagrama principal envolve três atores:
 - Aluno → realiza a rotulagem das imagens.
 - Sistema → armazena, valida e exporta os dados rotulados.
 
-<img width="1025" height="483" alt="image" src="https://github.com/user-attachments/assets/5143c38a-9e92-4124-a609-7b987aa9802d" />
+<img width="3094" height="1828" alt="Label4Learn (2)" src="https://github.com/user-attachments/assets/91541757-8081-44b8-b170-a3d6e8e0ea72" />
 
 Fluxo resumido:
 
