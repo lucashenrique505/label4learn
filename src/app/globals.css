@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap");
+
 *,
 *::before,
 *::after {
@@ -15,6 +17,7 @@
 
   /* Cores */
   --branco: #fefefe;
+  --cinza-fundo: #f8f5f6;
   --cinza-claro: #f0eaec;
   --cinza-medio: #8a7a7e;
   --cinza-escuro: #3d2a30;
@@ -29,6 +32,7 @@
   --sombra-vermelha: 0 8px 32px rgba(139, 21, 56, 0.35);
 
   /* Bordas */
+  --raio-pequeno: 8px;
   --raio-medio: 12px;
   --raio-grande: 16px;
   --raio-completo: 9999px;
@@ -60,6 +64,17 @@ a {
   color: inherit;
 }
 
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
 .gradient-text {
   background: var(--gradiente-primario);
   -webkit-background-clip: text;
@@ -68,13 +83,6 @@ a {
 }
 
 /* Botões */
-button {
-  cursor: pointer;
-  border: none;
-  background: none;
-  font-family: inherit;
-}
-
 .button {
   display: inline-flex;
   align-items: center;

@@ -14,7 +14,7 @@ const Navbar = () => {
             <GraduationCap />
           </div>
           <span className="logo-text">
-            Label<span className="logo-emphasis">4Learn</span>
+            Label<span className="logo-highlight">4Learn</span>
           </span>
         </Link>
 

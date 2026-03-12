@@ -1,0 +1,151 @@
+.footer {
+  background-color: var(--cinza-fundo);
+  border-top: 1px solid var(--borda);
+}
+
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 16px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 32px;
+}
+
+.mark {
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--raio-medio);
+  background-color: var(--vermelho-escuro);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-icon svg {
+  width: 24px;
+  height: 24px;
+  color: var(--branco);
+}
+
+.logo-text {
+  font-family: var(--fonte-titulo);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--cinza-escuro);
+}
+
+.description {
+  color: var(--cinza-medio);
+  max-width: 360px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.social-medias {
+  display: flex;
+  gap: 12px;
+}
+
+.social-media {
+  width: 40px;
+  height: 40px;
+  background-color: var(--vermelho-fundo);
+  border-radius: var(--raio-pequeno);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.social-media:hover {
+  background-color: var(--vermelho-escuro);
+}
+
+.social-media svg {
+  width: 20px;
+  height: 20px;
+  color: var(--cinza-escuro);
+  transition: color 0.2s;
+}
+
+.social-media:hover svg {
+  color: var(--branco);
+}
+
+.column-title {
+  font-family: var(--fonte-titulo);
+  font-weight: 600;
+  color: var(--cinza-escuro);
+  margin-bottom: 16px;
+  display: flex;
+}
+
+.list-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.link {
+  color: var(--cinza-medio);
+  font-size: 14px;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.link:hover {
+  color: var(--vermelho-escuro);
+}
+
+.link svg {
+  width: 16px;
+  height: 16px;
+}
+
+.bottom-footer {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--borda);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.copyright {
+  font-size: 14px;
+  color: var(--cinza-medio);
+}
+
+.legal-links {
+  display: flex;
+  gap: 24px;
+}
+
+.legal-link {
+  font-size: 14px;
+  color: var(--cinza-medio);
+  transition: color 0.2s;
+}
+
+.legal-link:hover {
+  color: var(--vermelho-escuro);
+}
