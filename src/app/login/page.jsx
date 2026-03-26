@@ -17,7 +17,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const onSendForm = (event) => {
+  const onSubmitForm = (event) => {
     event.preventDefault;
     console.log("Login:", { email, password });
   };
@@ -47,7 +47,7 @@ const Login = () => {
               </p>
             </div>
 
-            <form onSubmit={onSendForm} className="form">
+            <form onSubmit={onSubmitForm} className="form">
               <div className="group-field">
                 <label htmlFor="email" className="label-field">
                   E-mail
