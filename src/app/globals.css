@@ -21,14 +21,17 @@
   --cinza-claro: #f0eaec;
   --cinza-medio: #8a7a7e;
   --cinza-escuro: #3d2a30;
-
   --borda: #e8dde0;
+
+  /* Feedback */
+  --cor-sucesso: #16a34a;
 
   /* Tipografia */
   --fonte-titulo: "Montserrat", sans-serif;
   --fonte-corpo: "Inter", sans-serif;
 
   /* Sombras */
+  --sombra-media: 0 8px 24px rgba(139, 21, 56, 0.12);
   --sombra-vermelha: 0 8px 32px rgba(139, 21, 56, 0.35);
 
   /* Bordas */
