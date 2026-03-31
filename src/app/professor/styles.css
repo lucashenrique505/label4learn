@@ -1,0 +1,100 @@
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.stats-grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.table-container {
+  background-color: var(--branco);
+  border-radius: var(--raio-medio);
+  border: 1px solid var(--borda);
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  padding: 16px 24px;
+  font-family: var(--fonte-titulo);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--cinza-escuro);
+  background-color: var(--cinza-fundo);
+  border-bottom: 1px solid var(--borda);
+}
+
+.table td {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--borda);
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.table tr:hover td {
+  background-color: rgba(129, 21, 56, 0.02);
+}
+
+.table-project-name {
+  font-weight: 600;
+  color: var(--cinza-escuro);
+}
+
+.table-project-description {
+  font-size: 14px;
+  color: var(--cinza-medio);
+}
+
+.table-project-participants {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progress-bar-text {
+  font-size: 14px;
+  color: var(--cinza-medio);
+}
+
+.active {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.button-table-action {
+  padding: 8px;
+  border-radius: var(--raio-pequeno);
+  transition: background-color 0.2s;
+}
+
+.button-table-action:hover {
+  background-color: var(--cinza-claro);
+}
+
+.button-table-action svg {
+  width: 16px;
+  height: 16px;
+  color: var(--cinza-medio);
+}
+
+@media (max-width: 768px) {
+  .stats-grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
