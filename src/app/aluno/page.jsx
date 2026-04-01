@@ -191,7 +191,7 @@ const StudentDashboard = () => {
                     </div>
                   </div>
 
-                  <Link href={`/labeling/${project.id}`}>
+                  <Link href={`/aluno/projetos/rotulagem/${project.id}`}>
                     <button className="button primary-button large-button">
                       {project.status === "completed"
                         ? "Ver resultados"

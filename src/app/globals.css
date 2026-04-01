@@ -24,6 +24,7 @@
   --borda: #e8dde0;
 
   /* Feedback */
+  --cor-erro: #dc2626;
   --cor-sucesso: #16a34a;
 
   /* Tipografia */
@@ -74,7 +75,8 @@ button {
   font-family: inherit;
 }
 
-input {
+input,
+textarea {
   font-family: inherit;
   font-size: inherit;
 }
