@@ -58,15 +58,13 @@ const LabelingInterface = () => {
             <Link href="/aluno" className="back-button">
               <ArrowLeft />
             </Link>
-            <div className="labeling-project-info">
-              <div className="labeling-project-icon">
+            <div className="project-info">
+              <div className="project-icon">
                 <GraduationCap />
               </div>
               <div>
-                <p className="labeling-project-name">
-                  Classificação de Animais
-                </p>
-                <p className="labeling-project-teacher">Prof. Fernando</p>
+                <p className="project-name">Classificação de Animais</p>
+                <p className="project-teacher">Prof. Fernando</p>
               </div>
             </div>
           </div>

@@ -6,6 +6,7 @@
     var(--vermelho-fundo-suave) 0%,
     var(--cinza-fundo) 100%
   );
+  border-bottom: 1px solid var(--borda);
 }
 
 .hero-content {
@@ -79,6 +80,7 @@
 
 .value-card:hover {
   border-color: rgba(139, 21, 56, 0.2);
+  box-shadow: var(--sombra-media);
 }
 
 .value-icon {

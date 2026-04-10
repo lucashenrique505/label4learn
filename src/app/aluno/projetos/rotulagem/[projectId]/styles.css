@@ -31,13 +31,13 @@
   background-color: var(--cinza-claro);
 }
 
-.labeling-project-info {
+.project-info {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.labeling-project-icon {
+.project-icon {
   width: 32px;
   height: 32px;
   border-radius: var(--raio-pequeno);
@@ -47,19 +47,19 @@
   justify-content: center;
 }
 
-.labeling-project-icon svg {
+.project-icon svg {
   width: 20px;
   height: 20px;
   color: var(--branco);
 }
 
-.labeling-project-name {
+.project-name {
   font-family: var(--fonte-titulo);
   font-weight: 600;
   color: var(--cinza-escuro);
 }
 
-.labeling-project-teacher {
+.project-teacher {
   font-size: 12px;
   color: var(--cinza-medio);
 }
