@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ArrowRight,
   Eye,
@@ -10,16 +11,56 @@ import {
   Lock,
   Mail,
 } from "lucide-react";
+
+import { createClient } from "@/lib/supabase/client";
+
 import "./styles.css";
 
 const Login = () => {
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const onSubmitForm = (event) => {
-    event.preventDefault;
-    console.log("Login:", { email, password });
+  const router = useRouter();
+  const supabase = createClient();
+
+  const onSubmitForm = async (event) => {
+    event.preventDefault();
+
+    if (loading) return;
+    setLoading(true);
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      alert("Erro: " + error.message);
+      return;
+    }
+
+    const user = data.user;
+
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+    if (profileError) {
+      alert("Erro ao buscar cadastro");
+      return;
+    }
+
+    setLoading(false);
+
+    if (profile.role === "teacher") {
+      router.push("/professor");
+    } else {
+      router.push("/aluno");
+    }
   };
 
   const changePasswordVisibility = () => {

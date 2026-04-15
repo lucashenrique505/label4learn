@@ -1,5 +1,6 @@
 "use client";
 
+import { createClient } from "@/lib/supabase/client";
 import {
   ArrowRight,
   BookOpen,
@@ -26,9 +27,41 @@ const Register = () => {
     passwordConfirmation: "",
   });
 
-  const onSubmitForm = (event) => {
+  const supabase = createClient();
+
+  const onSubmitForm = async (event) => {
     event.preventDefault();
-    console.log("Register:", { ...formData, userType });
+
+    if (formData.password !== formData.passwordConfirmation) {
+      alert("Senhas não conferem!");
+      return;
+    }
+
+    const { data, error } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+    });
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    const user = data.user;
+
+    const { error: profileError } = await supabase.from("profiles").insert({
+      id: user.id,
+      full_name: formData.fullName,
+      role: userType,
+      email: formData.email,
+    });
+
+    if (profileError) {
+      alert("Erro ao salvar cadastro: " + profileError.message);
+      return;
+    }
+
+    alert("Conta criada com sucesso!");
   };
 
   const updateField = (fieldName, value) => {
