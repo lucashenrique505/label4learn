@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -49,6 +49,35 @@ const LabelingInterface = () => {
       nextImage();
     }
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key >= "1" && event.key <= "4") {
+        setSelectedLabel(Number(event.key));
+      }
+
+      if (event.key === "Enter") {
+        if (!selectedLabel) {
+          nextImage();
+        }
+        confirmLabel();
+      }
+
+      if (event.key === "ArrowRight") {
+        nextImage();
+      }
+
+      if (event.key === "ArrowLeft") {
+        backImage();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedLabel, currentImage]);
 
   return (
     <>
