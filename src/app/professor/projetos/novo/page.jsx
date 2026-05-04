@@ -1,5 +1,7 @@
 "use client";
 
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
   ArrowRight,
@@ -46,6 +48,61 @@ const CreateProject = () => {
     if (stepNumber === currentStep) return "step-indicator step-current";
     if (stepNumber < currentStep) return "step-indicator step-completed";
     return "step-indicator step-future";
+  };
+
+  const router = useRouter();
+
+  const handleCreateProject = async () => {
+    const supabase = createClient();
+
+    // clear empty labels
+    const filteredLabels = projectData.labels.filter((l) => l.trim() !== "");
+
+    if (!projectData.name) {
+      alert("Nome do projeto é obrigatório!");
+      return;
+    }
+
+    // create project
+    const { data: project, error: projectError } = await supabase
+      .from("projects")
+      .insert([
+        {
+          name: projectData.name,
+          description: projectData.description,
+          status: "draft",
+        },
+      ])
+      .select()
+      .single();
+
+    if (projectError) {
+      console.error(projectError);
+      alert("Erro ao criar o projeto!");
+      return;
+    }
+
+    // create project labels
+    if (filteredLabels.length > 0) {
+      const labelsToInsert = filteredLabels.map((label) => ({
+        name: label,
+        project_id: project.id,
+      }));
+
+      const { error: labelsError } = await supabase
+        .from("labels")
+        .insert(labelsToInsert);
+
+      if (labelsError) {
+        console.error(labelsError);
+        alert("Projeto criado, mas erro ao salvar os rótulos!");
+        return;
+      }
+    }
+
+    alert("Projeto criado com sucesso!");
+
+    router.push("/professor");
   };
 
   return (
@@ -174,7 +231,10 @@ const CreateProject = () => {
                   Voltar
                 </button>
 
-                <button className="button primary-button">
+                <button
+                  onClick={handleCreateProject}
+                  className="button primary-button"
+                >
                   Criar Projeto <ArrowRight size={16} />
                 </button>
               </div>
