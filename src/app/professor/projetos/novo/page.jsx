@@ -82,6 +82,32 @@ const CreateProject = () => {
       return;
     }
 
+    // create project users
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      alert("Usuário não autenticado");
+      return;
+    }
+
+    const { error: userProjectError } = await supabase
+      .from("project_users")
+      .insert([
+        {
+          project_id: project.id,
+          user_id: user.id,
+          role: "teacher",
+        },
+      ]);
+
+    if (userProjectError) {
+      console.error(userProjectError);
+      alert("Projeto criado, mas erro ao vincular professor");
+      return;
+    }
+
     // create project labels
     if (filteredLabels.length > 0) {
       const labelsToInsert = filteredLabels.map((label) => ({

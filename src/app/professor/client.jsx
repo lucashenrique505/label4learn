@@ -21,36 +21,6 @@ import { createClient } from "@/lib/supabase/client";
 import "../aluno/styles.css";
 import "./styles.css";
 
-const projectsList = [
-  {
-    id: 1,
-    name: "Classificação de Animais",
-    description: "Identificar espécies de animais em imagens",
-    totalImages: 150,
-    labeledImages: 89,
-    participants: 12,
-    status: "active",
-  },
-  {
-    id: 2,
-    name: "Detecção de Plantas",
-    description: "Classificar tipos de folhas e flores",
-    totalImages: 200,
-    labeledImages: 200,
-    participants: 18,
-    status: "completed",
-  },
-  {
-    id: 3,
-    name: "Reconhecimento de Objetos",
-    description: "Identificar objetos do cotidiano",
-    totalImages: 300,
-    labeledImages: 45,
-    participants: 8,
-    status: "active",
-  },
-];
-
 const TeacherDashboardClient = ({ user }) => {
   const supabase = createClient();
   const router = useRouter();
@@ -60,7 +30,15 @@ const TeacherDashboardClient = ({ user }) => {
     full_name: "",
     email: "",
   });
+  const [projects, setProjects] = useState([]);
+  const [stats, setStats] = useState({
+    totalProjects: 0,
+    totalImages: 0,
+    labeledImages: 0,
+    participants: 0,
+  });
 
+  // Route authentication
   useEffect(() => {
     const getProfile = async () => {
       const { data, error } = await supabase
@@ -80,13 +58,110 @@ const TeacherDashboardClient = ({ user }) => {
     getProfile();
   }, [supabase, user.id]);
 
+  // Projects info
+  useEffect(() => {
+    const fetchProjects = async () => {
+      //search teacher projects
+      const { data: projectsData, error } = await supabase
+        .from("project_users")
+        .select(
+          `
+          project:projects (
+            id,
+            name,
+            description,
+            status,
+            project_files (
+            id,
+            annotations (
+              image_id
+            )
+          ),
+            project_users (id)
+          )
+        `,
+        )
+        .eq("user_id", user.id)
+        .eq("role", "teacher");
+
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      const formattedProjects = projectsData.map((p) => {
+        const totalImages = p.project_files?.length || 0;
+
+        const labeledImages = new Set(p.annotations?.map((a) => a.image_id))
+          .size;
+
+        const participants = p.project_users?.length || 0;
+
+        return {
+          id: p.project.id,
+          name: p.project.name,
+          description: p.project.description,
+          status: p.project.status,
+          totalImages,
+          labeledImages,
+          participants,
+        };
+      });
+
+      setProjects(formattedProjects);
+
+      // calculates general stats
+      const totalProjects = formattedProjects.length;
+      const totalImages = formattedProjects.reduce(
+        (acc, p) => acc + p.totalImages,
+        0,
+      );
+      const labeledImages = formattedProjects.reduce(
+        (acc, p) => acc + p.labeledImages,
+        0,
+      );
+      const participants = formattedProjects.reduce(
+        (acc, p) => acc + p.participants,
+        0,
+      );
+
+      setStats({
+        totalProjects,
+        totalImages,
+        labeledImages,
+        participants,
+      });
+    };
+
+    fetchProjects();
+  });
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push("/login");
   };
 
   const projectPercentage = (labeled, total) => {
+    if (labeled === 0 || total === 0) {
+      return 0;
+    }
+
     return Math.round((labeled / total) * 100);
+  };
+
+  const statusMap = {
+    draft: {
+      label: "Rascunho",
+      className: "draft",
+    },
+    active: {
+      label: "Ativo",
+      className: "active",
+    },
+    finished: {
+      label: "Concluído",
+      className: "completed",
+    },
   };
 
   return (
@@ -163,7 +238,7 @@ const TeacherDashboardClient = ({ user }) => {
                 </div>
                 <span className="stats-card-label">Projetos</span>
               </div>
-              <p className="stats-card-value">3</p>
+              <p className="stats-card-value">{stats.totalProjects}</p>
             </div>
             <div className="stats-card">
               <div className="stats-card-header">
@@ -172,7 +247,7 @@ const TeacherDashboardClient = ({ user }) => {
                 </div>
                 <span className="stats-card-label">Imagens</span>
               </div>
-              <p className="stats-card-value">650</p>
+              <p className="stats-card-value">{stats.totalImages}</p>
             </div>
             <div className="stats-card">
               <div className="stats-card-header">
@@ -181,7 +256,7 @@ const TeacherDashboardClient = ({ user }) => {
                 </div>
                 <span className="stats-card-label">Rotuladas</span>
               </div>
-              <p className="stats-card-value">334</p>
+              <p className="stats-card-value">{stats.labeledImages}</p>
             </div>
             <div className="stats-card">
               <div className="stats-card-header">
@@ -190,7 +265,7 @@ const TeacherDashboardClient = ({ user }) => {
                 </div>
                 <span className="stats-card-label">Participantes</span>
               </div>
-              <p className="stats-card-value">38</p>
+              <p className="stats-card-value">{stats.participants}</p>
             </div>
           </div>
 
@@ -206,60 +281,62 @@ const TeacherDashboardClient = ({ user }) => {
                 </tr>
               </thead>
               <tbody>
-                {projectsList.map((project) => (
-                  <tr key={project.id}>
-                    <td>
-                      <p className="table-project-name">{project.name}</p>
-                      <p className="table-project-description">
-                        {project.description}
-                      </p>
-                    </td>
-                    <td>
-                      <div className="progress-bar-container">
-                        <div className="progress-bar">
-                          <div
-                            className="progress-bar-fill"
-                            style={{
-                              width: `${projectPercentage(project.labeledImages, project.totalImages)}%`,
-                            }}
-                          />
+                {projects.map((project) => {
+                  return (
+                    <tr key={project.id}>
+                      <td>
+                        <p className="table-project-name">{project.name}</p>
+                        <p className="table-project-description">
+                          {project.description}
+                        </p>
+                      </td>
+                      <td>
+                        <div className="progress-bar-container">
+                          <div className="progress-bar">
+                            <div
+                              className="progress-bar-fill"
+                              style={{
+                                width: `${projectPercentage(project.labeledImages, project.totalImages)}%`,
+                              }}
+                            />
+                          </div>
+                          <span className="progress-bar-text">
+                            {project.labeledImages}/{project.totalImages}
+                          </span>
                         </div>
-                        <span className="progress-bar-text">
-                          {project.labeledImages}/{project.totalImages}
+                      </td>
+                      <td>
+                        <div className="table-project-participants">
+                          <User
+                            size={16}
+                            style={{ color: "var(--cinza-medio)" }}
+                          />
+                          <span>{project.participants}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <span
+                          className={`status-badge ${statusMap[project.status]?.className || ""}`}
+                        >
+                          {statusMap[project.status]?.label || project.status}
                         </span>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="table-project-participants">
-                        <User
-                          size={16}
-                          style={{ color: "var(--cinza-medio" }}
-                        />
-                        <span>{project.participants}</span>
-                      </div>
-                    </td>
-                    <td>
-                      <span
-                        className={`status-badge ${project.status === "active" ? "active" : "completed"}`}
-                      >
-                        {project.status === "active" ? "Ativo" : "Concluído"}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="table-actions">
-                        <button className="button-table-action">
-                          <Eye />
-                        </button>
-                        <button className="button-table-action">
-                          <Edit />
-                        </button>
-                        <button className="button-table-action">
-                          <Trash2 />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td>
+                        <div className="table-actions">
+                          <button className="button-table-action">
+                            <Eye />
+                          </button>
+                          <button className="button-table-action">
+                            <Edit />
+                          </button>
+                          <button className="button-table-action">
+                            <Trash2 />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
