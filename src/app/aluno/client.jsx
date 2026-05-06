@@ -16,44 +16,9 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import "./styles.css";
 
-const availableProjects = [
-  {
-    id: 1,
-    name: "Classificação de Animais",
-    teacher: "Prof. Fernando",
-    totalImages: 150,
-    deadline: "15/04/2026",
-  },
-  {
-    id: 2,
-    name: "Reconhecimento de Objetos",
-    teacher: "Prof. Marina",
-    totalImages: 300,
-    deadline: "20/05/2026",
-  },
-];
-
-const myProjects = [
-  {
-    id: 3,
-    name: "Detecção de Plantas",
-    teacher: "Prof. Fernando",
-    labeledImages: 45,
-    totalImages: 200,
-    status: "in-progress",
-  },
-  {
-    id: 4,
-    name: "Classificação de Veículos",
-    teacher: "Prof. Carlos",
-    labeledImages: 80,
-    totalImages: 80,
-    status: "completed",
-  },
-];
+const supabase = createClient();
 
 const StudentDashboardClient = ({ user }) => {
-  const supabase = createClient();
   const router = useRouter();
 
   const [activeTab, setActiveTab] = useState("mine");
@@ -62,7 +27,15 @@ const StudentDashboardClient = ({ user }) => {
     full_name: "",
     email: "",
   });
+  const [availableProjects, setAvailableProjects] = useState([]);
+  const [myProjects, setMyProjects] = useState([]);
 
+  const formatDate = (date) => {
+    const [year, month, day] = date.split("-");
+    return new Date(year, month - 1, day).toLocaleDateString("pt-BR");
+  };
+
+  // get user infos
   useEffect(() => {
     const getProfile = async () => {
       const { data, error } = await supabase
@@ -80,7 +53,116 @@ const StudentDashboardClient = ({ user }) => {
     };
 
     getProfile();
-  }, [supabase, user.id]);
+  }, [user.id]);
+
+  // get available projects
+  useEffect(() => {
+    const fetchAvailableProjects = async () => {
+      const { data, error } = await supabase.from("projects").select(
+        `
+        id,
+        name,
+        deadline,
+        images_per_student,
+        project_users (
+          role,
+          user_id,
+          user:profiles(
+            full_name
+          )
+        )
+        `,
+      );
+
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      const formatted = data
+        .filter((p) => {
+          const userInProject = p.project_users.some(
+            (u) => u.user_id === user.id,
+          );
+          console.log(userInProject);
+          return !userInProject;
+        })
+        .map((p) => {
+          const teacher = p.project_users.find((u) => u.role === "teacher");
+
+          return {
+            id: p.id,
+            name: p.name,
+            teacher: teacher?.user?.full_name || "Professor",
+            totalImages: p.images_per_student,
+            deadline: formatDate(p.deadline),
+          };
+        });
+
+      setAvailableProjects(formatted);
+    };
+
+    fetchAvailableProjects();
+  }, []);
+
+  // get student projects
+  useEffect(() => {
+    const fetchMyProjects = async () => {
+      const { data, error } = await supabase
+        .from("project_users")
+        .select(
+          `
+          project:projects (
+            id,
+            name,
+            project_files (
+              id,
+              annotations (user_id)
+            ),
+            project_users (
+              role,
+              user:profiles (full_name)
+            )
+          )
+          `,
+        )
+        .eq("user_id", user.id)
+        .eq("role", "student");
+
+      if (error) {
+        console.log(error);
+        return;
+      }
+
+      const formatted = data.map(({ project: p }) => {
+        const teacher = p.project_users.find((u) => u.role === "teacher");
+
+        const totalImages = p.project_files?.length || 0;
+
+        const labeledImages = p.project_files?.reduce((acc, file) => {
+          const userAnnotations =
+            file.annotations?.filter((a) => a.user_id === user.id) || [];
+          return acc + userAnnotations.length;
+        }, 0);
+
+        return {
+          id: p.id,
+          name: p.name,
+          teacher: teacher?.user?.full_name,
+          totalImages,
+          labeledImages,
+          status:
+            labeledImages !== 0 && labeledImages === totalImages
+              ? "completed"
+              : "in-progress",
+        };
+      });
+
+      setMyProjects(formatted);
+    };
+
+    fetchMyProjects();
+  }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -88,7 +170,32 @@ const StudentDashboardClient = ({ user }) => {
   };
 
   const projectPercentage = (labeled, total) => {
+    if (labeled === 0 || total === 0) {
+      return 0;
+    }
+
     return Math.round((labeled / total) * 100);
+  };
+
+  const handleJoinProject = async (projectId) => {
+    const { error } = await supabase.from("project_users").insert([
+      {
+        project_id: projectId,
+        user_id: user.id,
+        role: "student",
+      },
+    ]);
+
+    if (error) {
+      console.log(error);
+      alert("Erro ao entrar no projeto");
+      return;
+    }
+
+    alert("Você entrou no projeto!");
+
+    await fetchAvailableProjects();
+    await fetchMyProjects();
   };
 
   return (
@@ -267,7 +374,10 @@ const StudentDashboardClient = ({ user }) => {
                     </div>
                   </div>
 
-                  <button className="button secondary-button large-button">
+                  <button
+                    onClick={() => handleJoinProject(project.id)}
+                    className="button secondary-button large-button"
+                  >
                     Participar do projeto
                     <ArrowRight size={16} />
                   </button>

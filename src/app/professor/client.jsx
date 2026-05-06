@@ -31,12 +31,13 @@ const TeacherDashboardClient = ({ user }) => {
     email: "",
   });
   const [projects, setProjects] = useState([]);
-  const [stats, setStats] = useState({
-    totalProjects: 0,
-    totalImages: 0,
-    labeledImages: 0,
-    participants: 0,
-  });
+
+  const stats = {
+    totalProjects: projects.length,
+    totalImages: projects.reduce((acc, p) => acc + p.totalImages, 0),
+    labeledImages: projects.reduce((acc, p) => acc + p.labeledImages, 0),
+    participants: projects.reduce((acc, p) => acc + p.participants, 0),
+  };
 
   // Route authentication
   useEffect(() => {
@@ -77,7 +78,10 @@ const TeacherDashboardClient = ({ user }) => {
               image_id
             )
           ),
-            project_users (id)
+            project_users (
+              id,
+              role
+            )
           )
         `,
         )
@@ -90,12 +94,15 @@ const TeacherDashboardClient = ({ user }) => {
       }
 
       const formattedProjects = projectsData.map((p) => {
-        const totalImages = p.project_files?.length || 0;
+        const totalImages = p.project.project_files?.length || 0;
 
-        const labeledImages = new Set(p.annotations?.map((a) => a.image_id))
-          .size;
+        const labeledImages = new Set(
+          p.project.annotations?.map((a) => a.image_id),
+        ).size;
 
-        const participants = p.project_users?.length || 0;
+        const participants =
+          p.project.project_users?.filter((u) => u.role === "student").length ||
+          0;
 
         return {
           id: p.project.id,
@@ -109,32 +116,10 @@ const TeacherDashboardClient = ({ user }) => {
       });
 
       setProjects(formattedProjects);
-
-      // calculates general stats
-      const totalProjects = formattedProjects.length;
-      const totalImages = formattedProjects.reduce(
-        (acc, p) => acc + p.totalImages,
-        0,
-      );
-      const labeledImages = formattedProjects.reduce(
-        (acc, p) => acc + p.labeledImages,
-        0,
-      );
-      const participants = formattedProjects.reduce(
-        (acc, p) => acc + p.participants,
-        0,
-      );
-
-      setStats({
-        totalProjects,
-        totalImages,
-        labeledImages,
-        participants,
-      });
     };
 
     fetchProjects();
-  });
+  }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -147,6 +132,33 @@ const TeacherDashboardClient = ({ user }) => {
     }
 
     return Math.round((labeled / total) * 100);
+  };
+
+  const handleDeleteProject = async (project) => {
+    const isDraft = project.status === "draft";
+
+    const message = isDraft
+      ? "Deseja realmente excluir esse rascunho?"
+      : "Este projeto possui alunos e/ou imagens em adnamento.\n\nTem certeza que deseja excluir? Esta ação é irreversível.";
+
+    const confirmDelete = window.confirm(message);
+
+    if (!confirmDelete) return;
+
+    const { error } = await supabase
+      .from("projects")
+      .delete()
+      .eq("id", project.id);
+
+    if (error) {
+      console.log(error);
+      alert("Erro ao excluir o projeto!");
+      return;
+    }
+
+    setProjects((prev) => prev.filter((p) => p.id !== project.id));
+
+    alert("Projeto excluído com sucesso!");
   };
 
   const statusMap = {
@@ -329,7 +341,10 @@ const TeacherDashboardClient = ({ user }) => {
                           <button className="button-table-action">
                             <Edit />
                           </button>
-                          <button className="button-table-action">
+                          <button
+                            onClick={() => handleDeleteProject(project)}
+                            className="button-table-action"
+                          >
                             <Trash2 />
                           </button>
                         </div>

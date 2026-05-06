@@ -19,6 +19,8 @@ const CreateProject = () => {
   const [projectData, setProjectData] = useState({
     name: "",
     description: "",
+    images_per_student: 50,
+    deadline: "",
     labels: [""],
   });
 
@@ -63,6 +65,10 @@ const CreateProject = () => {
       return;
     }
 
+    const standardDeadline = new Date(Date.now() + 28 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split("T")[0];
+
     // create project
     const { data: project, error: projectError } = await supabase
       .from("projects")
@@ -71,6 +77,8 @@ const CreateProject = () => {
           name: projectData.name,
           description: projectData.description,
           status: "draft",
+          images_per_student: projectData.images_per_student || 50,
+          deadline: projectData.deadline || standardDeadline,
         },
       ])
       .select()
@@ -192,6 +200,28 @@ const CreateProject = () => {
                     rows={4}
                     className="textarea"
                   ></textarea>
+                </div>
+                <div className="group-field">
+                  <label className="label-field">Imagens por Aluno</label>
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="Ex: 50"
+                    value={projectData.images_per_student}
+                    onChange={(e) =>
+                      updateField("images_per_student", Number(e.target.value))
+                    }
+                    className="input-field high-input-field"
+                  />
+                </div>
+                <div className="group-field">
+                  <label className="label-field">Término do Projeto</label>
+                  <input
+                    type="date"
+                    value={projectData.deadline}
+                    onChange={(e) => updateField("deadline", e.target.value)}
+                    className="input-field high-input-field"
+                  />
                 </div>
               </div>
               <div className="navigation-right">
