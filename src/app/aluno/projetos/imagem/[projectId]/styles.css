@@ -207,6 +207,7 @@
   aspect-ratio: 1;
   object-fit: cover;
   display: block;
+  height: auto;
 }
 
 .remove-button {

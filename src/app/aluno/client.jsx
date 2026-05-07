@@ -29,6 +29,11 @@ const StudentDashboardClient = ({ user }) => {
   });
   const [availableProjects, setAvailableProjects] = useState([]);
   const [myProjects, setMyProjects] = useState([]);
+  const [stats, setStats] = useState({
+    labeledImages: 0,
+    activeProjects: 0,
+    completedProjects: 0,
+  });
 
   const formatDate = (date) => {
     const [year, month, day] = date.split("-");
@@ -56,10 +61,9 @@ const StudentDashboardClient = ({ user }) => {
   }, [user.id]);
 
   // get available projects
-  useEffect(() => {
-    const fetchAvailableProjects = async () => {
-      const { data, error } = await supabase.from("projects").select(
-        `
+  const fetchAvailableProjects = async () => {
+    const { data, error } = await supabase.from("projects").select(
+      `
         id,
         name,
         deadline,
@@ -72,46 +76,50 @@ const StudentDashboardClient = ({ user }) => {
           )
         )
         `,
-      );
+    );
 
-      if (error) {
-        console.log(error);
-        return;
-      }
+    if (error) {
+      console.log(error);
+      return;
+    }
 
-      const formatted = data
-        .filter((p) => {
-          const userInProject = p.project_users.some(
-            (u) => u.user_id === user.id,
-          );
-          console.log(userInProject);
-          return !userInProject;
-        })
-        .map((p) => {
-          const teacher = p.project_users.find((u) => u.role === "teacher");
+    const formatted = data
+      .filter((p) => {
+        const userInProject = p.project_users.some(
+          (u) => u.user_id === user.id,
+        );
+        console.log(userInProject);
+        return !userInProject;
+      })
+      .map((p) => {
+        const teacher = p.project_users.find((u) => u.role === "teacher");
 
-          return {
-            id: p.id,
-            name: p.name,
-            teacher: teacher?.user?.full_name || "Professor",
-            totalImages: p.images_per_student,
-            deadline: formatDate(p.deadline),
-          };
-        });
+        return {
+          id: p.id,
+          name: p.name,
+          teacher: teacher?.user?.full_name || "Professor",
+          totalImages: p.images_per_student,
+          deadline: formatDate(p.deadline),
+        };
+      });
 
-      setAvailableProjects(formatted);
+    setAvailableProjects(formatted);
+  };
+
+  useEffect(() => {
+    const loadProjects = async () => {
+      await fetchAvailableProjects();
     };
 
-    fetchAvailableProjects();
+    loadProjects();
   }, []);
 
   // get student projects
-  useEffect(() => {
-    const fetchMyProjects = async () => {
-      const { data, error } = await supabase
-        .from("project_users")
-        .select(
-          `
+  const fetchMyProjects = async () => {
+    const { data, error } = await supabase
+      .from("project_users")
+      .select(
+        `
           project:projects (
             id,
             name,
@@ -125,43 +133,67 @@ const StudentDashboardClient = ({ user }) => {
             )
           )
           `,
-        )
-        .eq("user_id", user.id)
-        .eq("role", "student");
+      )
+      .eq("user_id", user.id)
+      .eq("role", "student");
 
-      if (error) {
-        console.log(error);
-        return;
-      }
+    if (error) {
+      console.log(error);
+      return;
+    }
 
-      const formatted = data.map(({ project: p }) => {
-        const teacher = p.project_users.find((u) => u.role === "teacher");
+    const formatted = data.map(({ project: p }) => {
+      const teacher = p.project_users.find((u) => u.role === "teacher");
 
-        const totalImages = p.project_files?.length || 0;
+      const totalImages = p.project_files?.length || 0;
 
-        const labeledImages = p.project_files?.reduce((acc, file) => {
-          const userAnnotations =
-            file.annotations?.filter((a) => a.user_id === user.id) || [];
-          return acc + userAnnotations.length;
-        }, 0);
+      const labeledImages = p.project_files?.reduce((acc, file) => {
+        const userAnnotations =
+          file.annotations?.filter((a) => a.user_id === user.id) || [];
+        return acc + userAnnotations.length;
+      }, 0);
 
-        return {
-          id: p.id,
-          name: p.name,
-          teacher: teacher?.user?.full_name,
-          totalImages,
-          labeledImages,
-          status:
-            labeledImages !== 0 && labeledImages === totalImages
-              ? "completed"
-              : "in-progress",
-        };
-      });
+      return {
+        id: p.id,
+        name: p.name,
+        teacher: teacher?.user?.full_name,
+        totalImages,
+        labeledImages,
+        status:
+          labeledImages !== 0 && labeledImages === totalImages
+            ? "completed"
+            : "in-progress",
+      };
+    });
 
-      setMyProjects(formatted);
+    setMyProjects(formatted);
+
+    const labeledImages = formatted.reduce(
+      (acc, p) => acc + p.labeledImages,
+      0,
+    );
+
+    const activeProjects = formatted.filter(
+      (p) => p.status === "in-progress",
+    ).length;
+
+    const completedProjects = formatted.filter(
+      (p) => p.status === "completed",
+    ).length;
+
+    setStats({
+      labeledImages,
+      activeProjects,
+      completedProjects,
+    });
+  };
+
+  useEffect(() => {
+    const loadProjects = async () => {
+      await fetchMyProjects();
     };
 
-    fetchMyProjects();
+    loadProjects();
   }, []);
 
   const handleLogout = async () => {
@@ -255,7 +287,7 @@ const StudentDashboardClient = ({ user }) => {
                 </div>
                 <span className="stats-card-label">Imagens Rotuladas</span>
               </div>
-              <p className="stats-card-value">125</p>
+              <p className="stats-card-value">{stats.labeledImages}</p>
             </div>
             <div className="stats-card">
               <div className="stats-card-header">
@@ -264,7 +296,7 @@ const StudentDashboardClient = ({ user }) => {
                 </div>
                 <span className="stats-card-label">Projetos Ativos</span>
               </div>
-              <p className="stats-card-value">2</p>
+              <p className="stats-card-value">{stats.activeProjects}</p>
             </div>
             <div className="stats-card">
               <div className="stats-card-header">
@@ -273,7 +305,7 @@ const StudentDashboardClient = ({ user }) => {
                 </div>
                 <span className="stats-card-label">Concluídos</span>
               </div>
-              <p className="stats-card-value">1</p>
+              <p className="stats-card-value">{stats.completedProjects}</p>
             </div>
           </div>
 
@@ -339,14 +371,23 @@ const StudentDashboardClient = ({ user }) => {
                     </div>
                   </div>
 
-                  <Link href={`/aluno/projetos/rotulagem/${project.id}`}>
-                    <button className="button primary-button large-button">
-                      {project.status === "completed"
-                        ? "Ver resultados"
-                        : "Continuar rotulagem"}
-                      <ArrowRight size={16} />
-                    </button>
-                  </Link>
+                  <div className="project-card-actions">
+                    <Link href={`/aluno/projetos/imagem/${project.id}`}>
+                      <button className="button secondary-button large-button">
+                        Adicionar Imagens
+                        <ArrowRight size={16} />
+                      </button>
+                    </Link>
+
+                    <Link href={`/aluno/projetos/rotulagem/${project.id}`}>
+                      <button className="button primary-button large-button">
+                        {project.status === "completed"
+                          ? "Ver resultados"
+                          : "Continuar rotulagem"}
+                        <ArrowRight size={16} />
+                      </button>
+                    </Link>
+                  </div>
                 </div>
               ))}
             </div>

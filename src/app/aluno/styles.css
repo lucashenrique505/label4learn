@@ -236,6 +236,13 @@
   transition: width 0.3s ease;
 }
 
+.project-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
 .status-badge {
   display: inline-flex;
   align-items: center;
