@@ -24,6 +24,7 @@ const UploadImages = () => {
   const [teacher, setTeacher] = useState("");
   const [imageGoal, setImageGoal] = useState(0);
   const [importedImages, setImportedImages] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const fileInputRef = useRef(null);
 
@@ -34,6 +35,22 @@ const UploadImages = () => {
 
     return Math.round((importedImages.length / imageGoal) * 100);
   };
+
+  const getUser = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    setCurrentUser(user);
+  };
+
+  useEffect(() => {
+    const loadUser = async () => {
+      await getUser();
+    };
+
+    loadUser();
+  }, []);
 
   const fetchProject = async () => {
     const { data, error } = await supabase
@@ -129,7 +146,10 @@ const UploadImages = () => {
     const uploadedImages = [];
 
     for (const file of limitedFiles) {
-      const fileName = `${Date.now()}-${file.name}`;
+      const sanitizedFileName = file.name
+        .replace(/\s+/g, "_")
+        .replace(/[^\w.-]/g, "");
+      const fileName = `${Date.now()}-${sanitizedFileName}`;
       const filePath = `${projectId}/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
@@ -145,16 +165,27 @@ const UploadImages = () => {
         data: { publicUrl },
       } = supabase.storage.from("projects").getPublicUrl(filePath);
 
-      await supabase.from("project_files").insert([
-        {
-          project_id: projectId,
-          file_name: file.name,
-          file_path: filePath,
-        },
-      ]);
+      const { data: insertedFile, error: dbError } = await supabase
+        .from("project_files")
+        .insert([
+          {
+            project_id: projectId,
+            user_id: currentUser?.id,
+            file_name: file.name,
+            file_path: filePath,
+          },
+        ])
+        .select()
+        .single();
+
+      if (dbError) {
+        console.log(dbError);
+        continue;
+      }
 
       uploadedImages.push({
-        id: filePath,
+        id: insertedFile.id,
+        file_path: filePath,
         name: file.name,
         size: file.size,
         preview: publicUrl,
@@ -164,24 +195,36 @@ const UploadImages = () => {
     setImportedImages((prev) => [...prev, ...uploadedImages]);
   };
 
-  const removeImage = async (imageId) => {
-    const image = importedImages.find((img) => img.id === imageId);
+  const removeImage = async (image) => {
+    // storage
+    const { data, error: storageError } = await supabase.storage
+      .from("projects")
+      .remove([image.file_path]);
 
-    if (!image) return;
+    console.log("image", image);
+    console.log("data", data);
+    console.log("storageError", storageError);
 
-    // remove database
-    const { error } = await supabase
-      .from("project_files")
-      .delete()
-      .eq("id", imageId);
-
-    if (error) {
-      console.log(error);
+    if (storageError) {
+      console.log(storageError);
+      alert("Erro ao remover imagem do storage!");
       return;
     }
 
-    // remove local state
-    setImportedImages((prev) => prev.filter((image) => image.id !== imageId));
+    // database
+    const { error: dbError } = await supabase
+      .from("project_files")
+      .delete()
+      .eq("id", image.id);
+
+    if (dbError) {
+      console.log(dbError);
+      alert("Erro ao remover imagem!");
+      return;
+    }
+
+    // screen
+    setImportedImages((prev) => prev.filter((img) => img.id !== image.id));
   };
 
   const openFileSelector = () => {
@@ -289,7 +332,7 @@ const UploadImages = () => {
                   />
 
                   <button
-                    onClick={() => removeImage(image.id)}
+                    onClick={() => removeImage(image)}
                     className="remove-button"
                   >
                     <X size={12} />

@@ -88,7 +88,6 @@ const StudentDashboardClient = ({ user }) => {
         const userInProject = p.project_users.some(
           (u) => u.user_id === user.id,
         );
-        console.log(userInProject);
         return !userInProject;
       })
       .map((p) => {
@@ -123,8 +122,10 @@ const StudentDashboardClient = ({ user }) => {
           project:projects (
             id,
             name,
+            images_per_student,
             project_files (
               id,
+              user_id,
               annotations (user_id)
             ),
             project_users (
@@ -145,22 +146,28 @@ const StudentDashboardClient = ({ user }) => {
     const formatted = data.map(({ project: p }) => {
       const teacher = p.project_users.find((u) => u.role === "teacher");
 
-      const totalImages = p.project_files?.length || 0;
+      const imagesToImport = p.images_per_student || 0;
 
-      const labeledImages = p.project_files?.reduce((acc, file) => {
-        const userAnnotations =
-          file.annotations?.filter((a) => a.user_id === user.id) || [];
-        return acc + userAnnotations.length;
-      }, 0);
+      const importedImages =
+        p.project_files?.filter((file) => file.user_id === user.id).length || 0;
+
+      const labeledImages =
+        p.project_files?.reduce((acc, file) => {
+          const userAnnotations =
+            file.annotations?.filter((a) => a.user_id === user.id) || [];
+          return acc + userAnnotations.length;
+        }, 0) || 0;
 
       return {
         id: p.id,
         name: p.name,
         teacher: teacher?.user?.full_name,
-        totalImages,
+        importedImages,
+        imagesToImport,
         labeledImages,
+        imagesToLabel: importedImages,
         status:
-          labeledImages !== 0 && labeledImages === totalImages
+          importedImages > 0 && labeledImages === importedImages
             ? "completed"
             : "in-progress",
       };
@@ -355,9 +362,9 @@ const StudentDashboardClient = ({ user }) => {
 
                   <div className="project-card-progress">
                     <div className="project-card-progress-info">
-                      <span>Progresso</span>
+                      <span>Importação</span>
                       <span>
-                        {project.labeledImages}/{project.totalImages}
+                        {project.importedImages}/{project.imagesToImport}
                       </span>
                     </div>
 
@@ -365,7 +372,25 @@ const StudentDashboardClient = ({ user }) => {
                       <div
                         className="progress-bar-fill"
                         style={{
-                          width: `${projectPercentage(project.labeledImages, project.totalImages)}%`,
+                          width: `${projectPercentage(project.importedImages, project.imagesToImport)}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="project-card-progress">
+                    <div className="project-card-progress-info">
+                      <span>Rotulagem</span>
+                      <span>
+                        {project.labeledImages}/{project.imagesToLabel}
+                      </span>
+                    </div>
+
+                    <div className="progress-bar" style={{ maxWidth: "100%" }}>
+                      <div
+                        className="progress-bar-fill"
+                        style={{
+                          width: `${projectPercentage(project.labeledImages, project.imagesToLabel)}%`,
                         }}
                       />
                     </div>

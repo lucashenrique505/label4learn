@@ -145,6 +145,7 @@
 }
 
 .image-container {
+  position: relative;
   flex: 1;
   background-color: var(--cinza-claro);
   border-radius: var(--raio-grande);
