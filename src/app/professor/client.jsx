@@ -96,19 +96,28 @@ const TeacherDashboardClient = ({ user }) => {
       const formattedProjects = projectsData.map((p) => {
         const totalImages = p.project.project_files?.length || 0;
 
-        const labeledImages = new Set(
-          p.project.annotations?.map((a) => a.image_id),
-        ).size;
+        const allAnnotations =
+          p.project.project_files?.flatMap((file) => file.annotations || []) ||
+          [];
+
+        const labeledImages = new Set(allAnnotations.map((a) => a.image_id))
+          .size;
 
         const participants =
           p.project.project_users?.filter((u) => u.role === "student").length ||
           0;
 
+        let status = "draft";
+
+        if (totalImages > 0) {
+          status = labeledImages >= totalImages ? "finished" : "active";
+        }
+
         return {
           id: p.project.id,
           name: p.project.name,
           description: p.project.description,
-          status: p.project.status,
+          status,
           totalImages,
           labeledImages,
           participants,
@@ -139,7 +148,7 @@ const TeacherDashboardClient = ({ user }) => {
 
     const message = isDraft
       ? "Deseja realmente excluir esse rascunho?"
-      : "Este projeto possui alunos e/ou imagens em adnamento.\n\nTem certeza que deseja excluir? Esta ação é irreversível.";
+      : "Este projeto possui alunos e/ou imagens em andamento.\n\nTem certeza que deseja excluir? Esta ação é irreversível!";
 
     const confirmDelete = window.confirm(message);
 
@@ -335,9 +344,11 @@ const TeacherDashboardClient = ({ user }) => {
                       </td>
                       <td>
                         <div className="table-actions">
-                          <button className="button-table-action">
-                            <Eye />
-                          </button>
+                          <Link href={`/professor/projetos/${project.id}`}>
+                            <button className="button-table-action">
+                              <Eye />
+                            </button>
+                          </Link>
                           <button className="button-table-action">
                             <Edit />
                           </button>
