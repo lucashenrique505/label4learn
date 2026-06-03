@@ -158,6 +158,22 @@ ul {
   transform: translateY(-2px);
 }
 
+.back-button {
+  padding: 8px;
+  border-radius: var(--raio-pequeno);
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: var(--cinza-claro);
+}
+
+.back-button svg {
+  width: 20px;
+  height: 20px;
+  color: var(--cinza-medio);
+}
+
 .input-field {
   width: 100%;
   padding: 12px 16px;

@@ -1,0 +1,191 @@
+.edit-project {
+  min-height: 100vh;
+  background-color: var(--cinza-fundo);
+}
+
+.edit-project-header {
+  height: 64px;
+  background-color: var(--branco);
+  border-bottom: 1px solid var(--borda);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.edit-project-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.edit-project-header-title {
+  font-family: var(--fonte-title);
+  font-weight: 600;
+  color: var(--cinza-escuro);
+}
+
+.edit-project-project-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.edit-project-project-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--raio-pequeno);
+  background-color: var(--vermelho-escuro);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-project-project-icon svg {
+  width: 20px;
+  height: 20px;
+  color: var(--branco);
+}
+
+.edit-project-steps-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.edit-project-step-indicator {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0edit-project-2s;
+}
+
+.edit-project-step-indicator-current {
+  background-color: var(--vermelho-escuro);
+  color: var(--branco);
+}
+
+.edit-project-step-indicator-complete {
+  background-color: var(--vermelho-fundo);
+  color: var(--vermelho-escuro);
+}
+
+.edit-project-step-indicator-future {
+  background-color: var(--cinza-claro);
+  color: var(--cinza-medio);
+}
+
+.edit-project-content {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.edit-project-section {
+  animation: surgirDeBaixo 0edit-project-4s ease-out;
+}
+
+.edit-project-section-header {
+  margin-bottom: 32px;
+}
+
+.edit-project-section-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--cinza-escuro);
+  margin-bottom: 8px;
+}
+
+.edit-project-section-description {
+  color: var(--cinza-medio);
+}
+
+.edit-project-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.edit-project-textarea-field {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--borda);
+  border-radius: var(--raio-medio);
+  font-size: 14px;
+  color: var(--cinza-escuro);
+  background-color: var(--branco);
+  resize: vertical;
+  min-height: 100px;
+  outline: none;
+  transition: border-color 0edit-project-2s;
+}
+
+.edit-project-textarea-field:focus {
+  border-color: var(--vermelho-escuro);
+}
+
+.edit-project-textarea-field::placeholder {
+  color: var(--cinza-medio);
+}
+
+.edit-project-creation-labels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.edit-project-creation-label-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.edit-project-label-item-icon {
+  width: 40px;
+  height: 40px;
+  background-color: var(--vermelho-fundo);
+  border-radius: var(--raio-pequeno);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.edit-project-label-item-icon svg {
+  width: 20px;
+  height: 20px;
+  color: var(--vermelho-escuro);
+}
+
+.edit-project-button-remove-label {
+  padding: 8px;
+  border-radius: var(--raio-pequeno);
+  transition: background-color 0edit-project-2s;
+}
+
+.edit-project-button-remove-label:hover {
+  background-color: rgba(220, 38, 38, 0edit-project-1);
+}
+
+.edit-project-button-remove-label svg {
+  width: 20px;
+  height: 20px;
+  color: var(--cor-erro);
+}
+
+.edit-project-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 32px;
+}
+
+.edit-project-navigation-right {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 32px;
+}

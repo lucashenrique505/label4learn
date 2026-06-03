@@ -349,9 +349,13 @@ const TeacherDashboardClient = ({ user }) => {
                               <Eye />
                             </button>
                           </Link>
-                          <button className="button-table-action">
-                            <Edit />
-                          </button>
+                          <Link
+                            href={`/professor/projetos/${project.id}/editar`}
+                          >
+                            <button className="button-table-action">
+                              <Edit />
+                            </button>
+                          </Link>
                           <button
                             onClick={() => handleDeleteProject(project)}
                             className="button-table-action"
