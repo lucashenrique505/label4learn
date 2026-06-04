@@ -237,6 +237,29 @@ const StudentDashboardClient = ({ user }) => {
     await fetchMyProjects();
   };
 
+  const getInitials = (fullName) => {
+    if (!fullName) return "";
+
+    const names = fullName.trim().split(" ");
+
+    if (names.length === 1) {
+      return names[0][0].toUpperCase();
+    }
+
+    return (names[0][0] + names[names.length - 1][0]).toUpperCase();
+  };
+
+  const term = searchTerm.trim().toLowerCase();
+  function searchByTerm(project) {
+    if (!term) return true;
+    return (
+      project.name.toLowerCase().includes(term) ||
+      project.teacher.toLowerCase().includes(term)
+    );
+  }
+  const myFilteredProjects = myProjects.filter(searchByTerm);
+  const availableFilteredProjects = availableProjects.filter(searchByTerm);
+
   return (
     <>
       <div className="dashboard">
@@ -259,11 +282,7 @@ const StudentDashboardClient = ({ user }) => {
           <div className="sidebar-user">
             <div className="user-info">
               <div className="user-avatar">
-                {profile.full_name
-                  ?.split(" ")
-                  .map((n) => n[0])
-                  .join("")
-                  .toUpperCase()}
+                {getInitials(profile.full_name)}
               </div>
               <div className="user-data">
                 <p className="user-name">{profile.full_name}</p>
@@ -344,7 +363,7 @@ const StudentDashboardClient = ({ user }) => {
 
           {activeTab === "mine" && (
             <div className="projects-grid">
-              {myProjects.map((project) => (
+              {myFilteredProjects.map((project) => (
                 <div key={project.id} className="project-card">
                   <div className="project-card-header">
                     <div>
@@ -382,7 +401,7 @@ const StudentDashboardClient = ({ user }) => {
                     <div className="project-card-progress-info">
                       <span>Rotulagem</span>
                       <span>
-                        {project.labeledImages}/{project.imagesToLabel}
+                        {project.labeledImages}/{project.imagesToImport}
                       </span>
                     </div>
 
@@ -390,7 +409,7 @@ const StudentDashboardClient = ({ user }) => {
                       <div
                         className="progress-bar-fill"
                         style={{
-                          width: `${projectPercentage(project.labeledImages, project.imagesToLabel)}%`,
+                          width: `${projectPercentage(project.labeledImages, project.imagesToImport)}%`,
                         }}
                       />
                     </div>
@@ -420,7 +439,7 @@ const StudentDashboardClient = ({ user }) => {
 
           {activeTab === "available" && (
             <div className="projects-grid">
-              {availableProjects.map((project) => (
+              {availableFilteredProjects.map((project) => (
                 <div key={project.id} className="project-card">
                   <div className="project-card-header">
                     <div>

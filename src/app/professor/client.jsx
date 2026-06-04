@@ -71,6 +71,7 @@ const TeacherDashboardClient = ({ user }) => {
             id,
             name,
             description,
+            images_per_student,
             status,
             project_files (
             id,
@@ -107,6 +108,14 @@ const TeacherDashboardClient = ({ user }) => {
           p.project.project_users?.filter((u) => u.role === "student").length ||
           0;
 
+        const projectGoal = participants * (p.project.images_per_student || 0);
+
+        console.log(participants, "participants");
+        console.log(
+          p.project.images_per_student,
+          "p.project.images_per_student",
+        );
+
         let status = "draft";
 
         if (totalImages > 0) {
@@ -121,6 +130,7 @@ const TeacherDashboardClient = ({ user }) => {
           totalImages,
           labeledImages,
           participants,
+          projectGoal,
         };
       });
 
@@ -135,12 +145,10 @@ const TeacherDashboardClient = ({ user }) => {
     router.push("/login");
   };
 
-  const projectPercentage = (labeled, total) => {
-    if (labeled === 0 || total === 0) {
-      return 0;
-    }
+  const projectPercentage = (current, goal) => {
+    if (!goal) return 0;
 
-    return Math.round((labeled / total) * 100);
+    return Math.min(Math.round((current / goal) * 100), 100);
   };
 
   const handleDeleteProject = async (project) => {
@@ -185,6 +193,18 @@ const TeacherDashboardClient = ({ user }) => {
     },
   };
 
+  const getInitials = (fullName) => {
+    if (!fullName) return "";
+
+    const names = fullName.trim().split(" ");
+
+    if (names.length === 1) {
+      return names[0][0].toUpperCase();
+    }
+
+    return (names[0][0] + names[names.length - 1][0]).toUpperCase();
+  };
+
   return (
     <>
       <div className="dashboard">
@@ -207,11 +227,7 @@ const TeacherDashboardClient = ({ user }) => {
           <div className="sidebar-user">
             <div className="user-info">
               <div className="user-avatar">
-                {profile.full_name
-                  ?.split(" ")
-                  .map((n) => n[0])
-                  .join("")
-                  .toUpperCase()}
+                {getInitials(profile.full_name)}
               </div>
               <div className="user-data">
                 <p className="user-name">{profile.full_name}</p>
@@ -302,12 +318,20 @@ const TeacherDashboardClient = ({ user }) => {
                 </tr>
               </thead>
               <tbody>
-                {projects.map((project) => {
-                  return (
+                {projects
+                  .filter((project) => {
+                    const term = searchTerm.trim().toLowerCase();
+                    if (!term) return true;
+                    return (
+                      project.name.toLowerCase().includes(term) ||
+                      project.description.toLowerCase().includes(term)
+                    );
+                  })
+                  .map((project) => (
                     <tr key={project.id}>
                       <td>
                         <p className="table-project-name">{project.name}</p>
-                        <p className="table-project-description">
+                        <p className="progress-bar-container">
                           {project.description}
                         </p>
                       </td>
@@ -317,18 +341,24 @@ const TeacherDashboardClient = ({ user }) => {
                             <div
                               className="progress-bar-fill"
                               style={{
-                                width: `${projectPercentage(project.labeledImages, project.totalImages)}%`,
+                                width: `${projectPercentage(project.labeledImages, project.projectGoal)}%`,
                               }}
                             />
                           </div>
                           <span className="progress-bar-text">
-                            {project.labeledImages}/{project.totalImages}
+                            {project.labeledImages}/{project.projectGoal}
                           </span>
                         </div>
                       </td>
                       <td>
-                        <div className="table-project-participants">
-                          <User
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "8px",
+                          }}
+                        >
+                          <Users
                             size={16}
                             style={{ color: "var(--cinza-medio)" }}
                           />
@@ -365,8 +395,7 @@ const TeacherDashboardClient = ({ user }) => {
                         </div>
                       </td>
                     </tr>
-                  );
-                })}
+                  ))}
               </tbody>
             </table>
           </div>

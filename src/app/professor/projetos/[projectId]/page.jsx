@@ -309,6 +309,18 @@ const ProjectDetails = () => {
     }
   };
 
+  const getInitials = (fullName) => {
+    if (!fullName) return "";
+
+    const names = fullName.trim().split(" ");
+
+    if (names.length === 1) {
+      return names[0][0].toUpperCase();
+    }
+
+    return (names[0][0] + names[names.length - 1][0]).toUpperCase();
+  };
+
   return (
     <>
       <div className="project-details">
@@ -481,11 +493,7 @@ const ProjectDetails = () => {
               {participants.map((participant, index) => (
                 <div key={index} className="participant-item">
                   <div className="participant-avatar">
-                    {participant.user?.full_name
-                      ?.split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      .toUpperCase()}
+                    {getInitials(participant.user?.full_name)}
                   </div>
 
                   <span>{participant.user?.full_name}</span>
