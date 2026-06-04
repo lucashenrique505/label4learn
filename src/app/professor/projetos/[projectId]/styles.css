@@ -49,6 +49,12 @@
   display: block;
 }
 
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .status {
   margin-top: 2px;
   display: inline-block;
@@ -133,6 +139,11 @@
   justify-content: center;
   font-size: 11px;
   font-weight: 600;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 @media (max-width: 768px) {
