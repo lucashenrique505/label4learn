@@ -111,18 +111,23 @@ O projeto atende integralmente aos requisitos obrigatórios da linha:
 
 ### Visão Inicial da Arquitetura
 
-A arquitetura segue o padrão MVC (Model-View-Controller) com as seguintes camadas:
+O Label4Learn adota uma arquitetura web moderna baseada em serviços gerenciados, utilizando Next.js para a interface da aplicação e Supabase como plataforma Backend as a Service (BaaS).
 
-- Frontend (View): Interface web interativa em ReactJS.
-- Backend (Controller): API construída em Node.js com Express, responsável pela lógica de negócios, autenticação, controle de fluxo e comunicação com o banco de dados.
-- Banco de Dados (Model): PostgreSQL para armazenamento estruturado das informações de usuários e rótulos.
-- Storage: AWS S3 (ou alternativa local) para armazenamento das imagens.
+A arquitetura é composta pelas seguintes camadas:
+
+- Frontend: Aplicação web desenvolvida com Next.js e React, responsável pela interface do usuário, navegação, gerenciamento de estado e interação com os serviços do sistema.
+- Camada de Serviços: Integração com o Supabase para autenticação de usuários, acesso aos dados, armazenamento de arquivos e controle de permissões.
+- Banco de Dados: PostgreSQL gerenciado pelo Supabase, responsável pelo armazenamento das informações de usuários, projetos, imagens, rótulos, participantes e anotações.
+- Armazenamento de Arquivos: Supabase Storage para armazenamento e gerenciamento das imagens utilizadas nos projetos de rotulagem.
+- Autenticação e Controle de Acesso: Supabase Auth para gerenciamento de usuários e definição dos perfis de professor e aluno.
 
 ### Padrões de Arquitetura
 
-- MVC – separação clara entre apresentação, controle e dados.
-- RESTful API – comunicação entre frontend e backend.
-- Arquitetura em Camadas – modularidade e facilidade de manutenção.
+- Arquitetura em Camadas: Separação entre interface, serviços e persistência de dados, promovendo organização e facilidade de manutenção.
+- Backend as a Service (BaaS): Utilização do Supabase para fornecer autenticação, banco de dados e armazenamento sem a necessidade de um servidor backend dedicado.
+- Componentização: Uso de componentes React reutilizáveis para promover modularidade e reutilização de código.
+- Client-Server Architecture: Comunicação entre a aplicação cliente (Next.js) e os serviços fornecidos pelo Supabase.
+- App Router (Next.js): Organização das rotas e páginas seguindo o modelo moderno de roteamento do Next.js.
 
 ### Protótipos Iniciais
 
