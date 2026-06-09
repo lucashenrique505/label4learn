@@ -72,7 +72,7 @@ Data de Entrega: 29/10/2025<br>
 | RF03   | Permitir que alunos participem de projetos e realizem a rotulagem de imagens.                                      | Alta       |
 | RF04   | Permitir a visualização e o acompanhamento do progresso da rotulagem.                                              | Média      |
 | RF05   | Permitir o download/exportação dos datasets rotulados em formato CSV.                                              | Alta       |
-| RF06   | Exibir estatísticas básicas do projeto (quantidade de imagens rotuladas, participantes, acurácia de concordância). | Média      |
+| RF06   | Exibir estatísticas básicas do projeto (quantidade de imagens rotuladas, participantes). | Média      |
 
 ### Requisitos Não-Funcionais (RNF)
 
@@ -82,9 +82,9 @@ Data de Entrega: 29/10/2025<br>
 | RNF02  | O sistema deve suportar ao menos 50 usuários simultâneos.                            | Desempenho       |
 | RNF03  | As imagens e rótulos devem ser armazenados em banco de dados seguro e versionado.    | Segurança        |
 | RNF04  | As ações críticas (criação, edição, exclusão de projetos) devem exigir autenticação. | Segurança        |
-| RNF05  | O tempo médio de carregamento das páginas não deve exceder 2 segundos.               | Desempenho       |
+| RNF05  | O tempo médio de carregamento das páginas não deve exceder 3 segundos.               | Desempenho       |
 | RNF06  | O código deve seguir boas práticas de clean code e arquitetura modular (MVC).        | Manutenibilidade |
-| RNF07  | A interface deve ser intuitiva e acessível, seguindo diretrizes básicas da WCAG.     | Usabilidade      |
+| RNF07  | A interface deve ser intuitiva e acessível.     | Usabilidade      |
 
 ### Representação dos Requisitos
 
