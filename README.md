@@ -59,14 +59,6 @@ Data de Entrega: 29/10/2025<br>
   &emsp;Em sua fase inicial, o MVP será restrito à rotulagem de imagens, sem suporte a texto, áudio ou vídeo, e não incluirá integração com APIs externas de IA. A validação ocorrerá em ambiente acadêmico controlado, com grupos limitados de alunos, e seu uso será voltado exclusivamente para fins educacionais e de pesquisa.<br>
 </p>
 
-<p align="justify">
-  &emsp;No aspecto ético e legal, o projeto seguirá as diretrizes da Lei Geral de Proteção de Dados (LGPD), garantindo o uso apenas de imagens de domínio público ou devidamente autorizadas, sem coleta de dados pessoais sensíveis. Serão observadas também as normas de acessibilidade da WCAG, assegurando uma interface intuitiva e inclusiva, e os princípios de ética em pesquisa, respeitando o uso responsável dos dados.<br>
-</p>
-
-<p align="justify">
-  &emsp;O sucesso da plataforma será avaliado por métricas objetivas, como o número de usuários ativos, a quantidade de imagens rotuladas por projeto, o tempo médio de rotulagem, a taxa de concordância entre rótulos, o feedback de usabilidade e a satisfação dos usuários. Além disso, será analisada a aplicabilidade dos datasets gerados em projetos acadêmicos de IA, comprovando o impacto educacional e prático da proposta.
-</p>
-
 # 3. Especificação Técnica
 
 ## 3.1 Requisitos de Software
