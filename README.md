@@ -128,32 +128,32 @@ A arquitetura segue o padrão MVC (Model-View-Controller) com as seguintes camad
 
 #### Tela Principal (Home)
 
-<img width="1302" height="701" alt="image" src="https://github.com/user-attachments/assets/b4ee2120-b95b-4ed9-86b8-2a0dc55c78ce" />
+<img width="1290" height="730" alt="tela_inicial" src="https://github.com/user-attachments/assets/51f4e471-26ac-4551-ba18-802020e48fbe" />
 
 #### Tela de Cadastro
 
-<img width="1278" height="735" alt="image" src="https://github.com/user-attachments/assets/9647f745-0143-42c3-861e-75f7b8102394" />
+<img width="1254" height="750" alt="tela_cadastro" src="https://github.com/user-attachments/assets/32f40cf6-aca2-4e14-a5d9-a59d17ba23ee" />
 
 #### Tela de Login
 
-<img width="1277" height="627" alt="image" src="https://github.com/user-attachments/assets/c283e21b-3651-4fc3-82aa-df5e872dd6de" />
+<img width="1251" height="638" alt="tela_login" src="https://github.com/user-attachments/assets/bd9e8e57-dc59-4242-ae80-64f6f4bb27d8" />
 
 #### Tela de Gerenciamento de Projetos do Professor
 
-<img width="1389" height="745" alt="gerencia_projetos" src="https://github.com/user-attachments/assets/a0cced99-ea6c-427a-9b88-7dc601de2160" />
+<img width="1389" height="745" alt="gerencia_projetos" src="https://github.com/user-attachments/assets/39bc575f-6b28-49f7-851a-6c9df4113832" />
 
 #### Tela de Criação de Projetos
 
-<img width="1366" height="661" alt="criacao_projeto1" src="https://github.com/user-attachments/assets/4fd100a2-ccd7-49d8-82ec-baf86a56c386" />
-<img width="1376" height="533" alt="criacao_projeto2" src="https://github.com/user-attachments/assets/084ed153-9b43-486f-981e-e7a65aa83652" />
+<img width="1366" height="661" alt="criacao_projeto1" src="https://github.com/user-attachments/assets/4f07be9b-3f12-44ce-8c57-9bc548063f51" />
+<img width="1376" height="533" alt="criacao_projeto2" src="https://github.com/user-attachments/assets/f519f1a6-ed4f-4781-9b5b-28a60ea8f41d" />
 
 #### Tela de Gerenciamento de Projetos do Aluno
 
-<img width="1368" height="744" alt="gerencia_projetos_aluno" src="https://github.com/user-attachments/assets/e56ef3b3-944b-4daa-939e-91ba4b7c196c" />
+<img width="1368" height="744" alt="gerencia_projetos_aluno" src="https://github.com/user-attachments/assets/e0cd0a76-30e1-4e03-8eed-3b306171ab6e" />
 
 #### Tela de Rotulagem das Imagens
 
-<img width="1373" height="734" alt="rotula_imagem" src="https://github.com/user-attachments/assets/01270730-cd22-49a9-90fb-9537c0f1872d" />
+<img width="1373" height="734" alt="rotula_imagem" src="https://github.com/user-attachments/assets/0a2329f4-e4ff-4ec8-a2dc-775318f17238" />
 
 ### Decisões e Alternativas Consideradas
 
