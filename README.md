@@ -167,28 +167,42 @@ A arquitetura é composta pelas seguintes camadas:
 
 ### Critérios de Escalabilidade, Resiliência e Segurança
 
-- Deploy em ambiente escalável (Docker + Render ou Railway).
-- Banco de dados com backup automático e controle de versão.
-- Controle de acesso baseado em função (professor/aluno).
-- Criptografia de senhas com bcrypt.
-- Validação de entrada e sanitização de dados conforme OWASP Top 10.
+- Infraestrutura Escalável: Utilização do Supabase como plataforma de backend gerenciado, permitindo escalabilidade automática dos serviços de autenticação, banco de dados e armazenamento de arquivos conforme o crescimento da aplicação.
+- Hospedagem da Aplicação: Deploy da interface web utilizando plataformas modernas compatíveis com Next.js, garantindo alta disponibilidade e facilidade de manutenção.
+- Persistência e Recuperação de Dados: Banco de dados PostgreSQL gerenciado pelo Supabase, com mecanismos de backup, replicação e recuperação fornecidos pela plataforma.
+- Controle de Acesso Baseado em Papéis (RBAC): Separação das permissões entre professores e alunos, garantindo que cada perfil tenha acesso apenas às funcionalidades permitidas.
+- Autenticação Segura: Gerenciamento de usuários realizado pelo Supabase Auth, utilizando práticas modernas de autenticação e armazenamento seguro de credenciais.
+- Segurança de Dados: Aplicação de políticas de acesso aos dados por meio de Row Level Security (RLS), restringindo a visualização e modificação de registros conforme o perfil e participação do usuário nos projetos.
+- Validação de Entradas: Verificação e tratamento dos dados recebidos pela aplicação para reduzir inconsistências e prevenir falhas de segurança.
+- Proteção Contra Vulnerabilidades: Desenvolvimento alinhado às recomendações da OWASP, buscando mitigar riscos relacionados a controle de acesso inadequado, exposição de dados sensíveis e ataques de injeção.
+- Armazenamento Seguro de Arquivos: Utilização do Supabase Storage para gerenciamento das imagens dos projetos, com controle de acesso e organização dos arquivos por projeto.
 
 ## 3.3 Stack Tecnológica
 
-| Categoria          | Tecnologia              | Justificativa                                          |
-| :----------------- | :---------------------- | :----------------------------------------------------- |
-| Linguagem Backend  | **Node.js**             | Simplicidade e ampla integração com bibliotecas de IA. |
-| Frontend           | **ReactJS**             | Framework moderno, responsivo e eficiente.             |
-| Banco de Dados     | **PostgreSQL**          | Confiável, open source e robusto.                      |
-| Armazenamento      | **AWS S3 / Cloudinary** | Gerenciamento de imagens e escalabilidade.             |
-| Controle de Versão | **Git + GitHub**        | Colaboração e versionamento.                           |
-| IDE                | **VS Code**             | Leve, multiplataforma e produtiva.                     |
-| Design             | **Figma**               | Criação de mockups interativos.                        |
-| Hospedagem         | **Render / Railway**    | Deploy gratuito e escalável para MVP.                  |
+| Categoria                    | Tecnologia                          | Justificativa |
+| :---------------------------- | :---------------------------------- | :------------ |
+| Linguagem de Programação      | **JavaScript / TypeScript**         | Desenvolvimento moderno de aplicações web com tipagem opcional e ampla comunidade. |
+| Framework Frontend            | **Next.js (React)**                 | Framework React que oferece roteamento baseado em arquivos, renderização otimizada e excelente experiência de desenvolvimento. |
+| Biblioteca de Interface       | **React**                           | Construção de interfaces reutilizáveis, componentizadas e responsivas. |
+| Backend as a Service (BaaS)   | **Supabase**                        | Centraliza autenticação, banco de dados, armazenamento de arquivos e APIs em uma única plataforma. |
+| Banco de Dados                | **PostgreSQL (Supabase Database)**  | Banco relacional robusto, confiável e amplamente utilizado em aplicações escaláveis. |
+| Autenticação                  | **Supabase Auth**                   | Gerenciamento seguro de usuários, sessões e controle de acesso baseado em perfis. |
+| Armazenamento de Arquivos     | **Supabase Storage**                | Armazenamento e gerenciamento das imagens utilizadas nos projetos de rotulagem. |
+| Controle de Versão            | **Git + GitHub**                    | Rastreamento de alterações, colaboração entre desenvolvedores e gerenciamento do código-fonte. |
+| Ambiente de Desenvolvimento   | **Visual Studio Code (VS Code)**    | IDE leve, extensível e amplamente utilizada no desenvolvimento web moderno. |
+| Prototipação e Design         | **Figma**                           | Criação de protótipos, wireframes e interfaces antes da implementação. |
+| Hospedagem da Aplicação       | **Vercel**                          | Plataforma otimizada para aplicações Next.js, com integração contínua e deploy simplificado. |
+| Biblioteca de Ícones          | **Lucide React**                    | Conjunto de ícones modernos e consistentes para a interface da aplicação. |
 
 Licenciamento:
 
-- Todas as tecnologias são open source (MIT, Apache 2.0, ou equivalentes).
+<p align="justify">
+  &emsp;As principais tecnologias utilizadas no desenvolvimento do Label4Learn possuem licenças permissivas e amplamente adotadas pela indústria de software, incluindo MIT, Apache 2.0, ISC e PostgreSQL License. Essas licenças permitem uso acadêmico, modificação e distribuição do software.
+</p>
+
+<p align="justify">
+  &emsp;Algumas ferramentas de apoio ao desenvolvimento, como o Figma, são disponibilizadas sob licenças proprietárias com planos gratuitos para fins educacionais e de prototipação.
+</p>
 
 ## 3.4 Considerações de Segurança
 
