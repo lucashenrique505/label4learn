@@ -53,27 +53,34 @@ const UploadImages = () => {
   }, []);
 
   const fetchProject = async () => {
+    if (!currentUser?.id) return;
+
     const { data, error } = await supabase
-      .from("projects")
+      .from("project_users")
       .select(
         `
-        id,
-        name,
-        images_per_student,
-        project_files (
-          id,
-          file_name,
-          file_path
-        ),
-        project_users (
           role,
-          user:profiles (
-            full_name
+          project:projects (
+            id,
+            name,
+            images_per_student,
+            project_files (
+              id,
+              user_id,
+              file_name,
+              file_path
+            ),
+            project_users (
+              role,
+              user:profiles (
+                full_name
+              )
+            )
           )
-        )
-      `,
+        `,
       )
-      .eq("id", projectId)
+      .eq("project_id", projectId)
+      .eq("user_id", currentUser.id)
       .single();
 
     if (error) {
@@ -81,35 +88,44 @@ const UploadImages = () => {
       return;
     }
 
-    const teacherUser = data.project_users.find((u) => u.role === "teacher");
+    const projectData = data.project;
 
-    setProject(data);
+    const teacherUser = projectData.project_users?.find(
+      (u) => u.role === "teacher",
+    );
+
+    setProject(projectData);
     setTeacher(teacherUser?.user?.full_name || "Professor");
-    setImageGoal(data.images_per_student || 0);
+    setImageGoal(projectData.images_per_student || 0);
 
     const formattedImages =
-      data.project_files?.map((file) => {
-        const {
-          data: { publicUrl },
-        } = supabase.storage.from("projects").getPublicUrl(file.file_path);
+      projectData.project_files
+        ?.filter((file) => file.user_id === currentUser.id)
+        .map((file) => {
+          const {
+            data: { publicUrl },
+          } = supabase.storage.from("projects").getPublicUrl(file.file_path);
 
-        return {
-          id: file.id,
-          name: file.file_name,
-          preview: publicUrl,
-        };
-      }) || [];
+          return {
+            id: file.id,
+            file_path: file.file_path,
+            name: file.file_name,
+            preview: publicUrl,
+          };
+        }) || [];
 
     setImportedImages(formattedImages);
   };
 
   useEffect(() => {
+    if (!currentUser) return;
+
     const loadProject = async () => {
       await fetchProject();
     };
 
     loadProject();
-  }, []);
+  }, [currentUser?.id]);
 
   const handleDrop = async (event) => {
     event.preventDefault();
@@ -200,10 +216,6 @@ const UploadImages = () => {
     const { data, error: storageError } = await supabase.storage
       .from("projects")
       .remove([image.file_path]);
-
-    console.log("image", image);
-    console.log("data", data);
-    console.log("storageError", storageError);
 
     if (storageError) {
       console.log(storageError);
