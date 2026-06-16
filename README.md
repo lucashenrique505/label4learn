@@ -59,14 +59,6 @@ Data de Entrega: 29/10/2025<br>
   &emsp;Em sua fase inicial, o MVP será restrito à rotulagem de imagens, sem suporte a texto, áudio ou vídeo, e não incluirá integração com APIs externas de IA. A validação ocorrerá em ambiente acadêmico controlado, com grupos limitados de alunos, e seu uso será voltado exclusivamente para fins educacionais e de pesquisa.<br>
 </p>
 
-<p align="justify">
-  &emsp;No aspecto ético e legal, o projeto seguirá as diretrizes da Lei Geral de Proteção de Dados (LGPD), garantindo o uso apenas de imagens de domínio público ou devidamente autorizadas, sem coleta de dados pessoais sensíveis. Serão observadas também as normas de acessibilidade da WCAG, assegurando uma interface intuitiva e inclusiva, e os princípios de ética em pesquisa, respeitando o uso responsável dos dados.<br>
-</p>
-
-<p align="justify">
-  &emsp;O sucesso da plataforma será avaliado por métricas objetivas, como o número de usuários ativos, a quantidade de imagens rotuladas por projeto, o tempo médio de rotulagem, a taxa de concordância entre rótulos, o feedback de usabilidade e a satisfação dos usuários. Além disso, será analisada a aplicabilidade dos datasets gerados em projetos acadêmicos de IA, comprovando o impacto educacional e prático da proposta.
-</p>
-
 # 3. Especificação Técnica
 
 ## 3.1 Requisitos de Software
@@ -80,7 +72,7 @@ Data de Entrega: 29/10/2025<br>
 | RF03   | Permitir que alunos participem de projetos e realizem a rotulagem de imagens.                                      | Alta       |
 | RF04   | Permitir a visualização e o acompanhamento do progresso da rotulagem.                                              | Média      |
 | RF05   | Permitir o download/exportação dos datasets rotulados em formato CSV.                                              | Alta       |
-| RF06   | Exibir estatísticas básicas do projeto (quantidade de imagens rotuladas, participantes, acurácia de concordância). | Média      |
+| RF06   | Exibir estatísticas básicas do projeto (quantidade de imagens rotuladas, participantes). | Média      |
 
 ### Requisitos Não-Funcionais (RNF)
 
@@ -90,9 +82,9 @@ Data de Entrega: 29/10/2025<br>
 | RNF02  | O sistema deve suportar ao menos 50 usuários simultâneos.                            | Desempenho       |
 | RNF03  | As imagens e rótulos devem ser armazenados em banco de dados seguro e versionado.    | Segurança        |
 | RNF04  | As ações críticas (criação, edição, exclusão de projetos) devem exigir autenticação. | Segurança        |
-| RNF05  | O tempo médio de carregamento das páginas não deve exceder 2 segundos.               | Desempenho       |
+| RNF05  | O tempo médio de carregamento das páginas não deve exceder 3 segundos.               | Desempenho       |
 | RNF06  | O código deve seguir boas práticas de clean code e arquitetura modular (MVC).        | Manutenibilidade |
-| RNF07  | A interface deve ser intuitiva e acessível, seguindo diretrizes básicas da WCAG.     | Usabilidade      |
+| RNF07  | A interface deve ser intuitiva e acessível.     | Usabilidade      |
 
 ### Representação dos Requisitos
 
@@ -119,49 +111,54 @@ O projeto atende integralmente aos requisitos obrigatórios da linha:
 
 ### Visão Inicial da Arquitetura
 
-A arquitetura segue o padrão MVC (Model-View-Controller) com as seguintes camadas:
+O Label4Learn adota uma arquitetura web moderna baseada em serviços gerenciados, utilizando Next.js para a interface da aplicação e Supabase como plataforma Backend as a Service (BaaS).
 
-- Frontend (View): Interface web interativa em ReactJS.
-- Backend (Controller): API construída em Node.js com Express, responsável pela lógica de negócios, autenticação, controle de fluxo e comunicação com o banco de dados.
-- Banco de Dados (Model): PostgreSQL para armazenamento estruturado das informações de usuários e rótulos.
-- Storage: AWS S3 (ou alternativa local) para armazenamento das imagens.
+A arquitetura é composta pelas seguintes camadas:
+
+- Frontend: Aplicação web desenvolvida com Next.js e React, responsável pela interface do usuário, navegação, gerenciamento de estado e interação com os serviços do sistema.
+- Camada de Serviços: Integração com o Supabase para autenticação de usuários, acesso aos dados, armazenamento de arquivos e controle de permissões.
+- Banco de Dados: PostgreSQL gerenciado pelo Supabase, responsável pelo armazenamento das informações de usuários, projetos, imagens, rótulos, participantes e anotações.
+- Armazenamento de Arquivos: Supabase Storage para armazenamento e gerenciamento das imagens utilizadas nos projetos de rotulagem.
+- Autenticação e Controle de Acesso: Supabase Auth para gerenciamento de usuários e definição dos perfis de professor e aluno.
 
 ### Padrões de Arquitetura
 
-- MVC – separação clara entre apresentação, controle e dados.
-- RESTful API – comunicação entre frontend e backend.
-- Arquitetura em Camadas – modularidade e facilidade de manutenção.
+- Arquitetura em Camadas: Separação entre interface, serviços e persistência de dados, promovendo organização e facilidade de manutenção.
+- Backend as a Service (BaaS): Utilização do Supabase para fornecer autenticação, banco de dados e armazenamento sem a necessidade de um servidor backend dedicado.
+- Componentização: Uso de componentes React reutilizáveis para promover modularidade e reutilização de código.
+- Client-Server Architecture: Comunicação entre a aplicação cliente (Next.js) e os serviços fornecidos pelo Supabase.
+- App Router (Next.js): Organização das rotas e páginas seguindo o modelo moderno de roteamento do Next.js.
 
 ### Protótipos Iniciais
 
 #### Tela Principal (Home)
 
-<img width="1302" height="701" alt="image" src="https://github.com/user-attachments/assets/b4ee2120-b95b-4ed9-86b8-2a0dc55c78ce" />
+<img width="1290" height="730" alt="tela_inicial" src="https://github.com/user-attachments/assets/51f4e471-26ac-4551-ba18-802020e48fbe" />
 
 #### Tela de Cadastro
 
-<img width="1278" height="735" alt="image" src="https://github.com/user-attachments/assets/9647f745-0143-42c3-861e-75f7b8102394" />
+<img width="1254" height="750" alt="tela_cadastro" src="https://github.com/user-attachments/assets/32f40cf6-aca2-4e14-a5d9-a59d17ba23ee" />
 
 #### Tela de Login
 
-<img width="1277" height="627" alt="image" src="https://github.com/user-attachments/assets/c283e21b-3651-4fc3-82aa-df5e872dd6de" />
+<img width="1251" height="638" alt="tela_login" src="https://github.com/user-attachments/assets/bd9e8e57-dc59-4242-ae80-64f6f4bb27d8" />
 
 #### Tela de Gerenciamento de Projetos do Professor
 
-<img width="1389" height="745" alt="gerencia_projetos" src="https://github.com/user-attachments/assets/a0cced99-ea6c-427a-9b88-7dc601de2160" />
+<img width="1389" height="745" alt="gerencia_projetos" src="https://github.com/user-attachments/assets/39bc575f-6b28-49f7-851a-6c9df4113832" />
 
 #### Tela de Criação de Projetos
 
-<img width="1366" height="661" alt="criacao_projeto1" src="https://github.com/user-attachments/assets/4fd100a2-ccd7-49d8-82ec-baf86a56c386" />
-<img width="1376" height="533" alt="criacao_projeto2" src="https://github.com/user-attachments/assets/084ed153-9b43-486f-981e-e7a65aa83652" />
+<img width="1366" height="661" alt="criacao_projeto1" src="https://github.com/user-attachments/assets/4f07be9b-3f12-44ce-8c57-9bc548063f51" />
+<img width="1376" height="533" alt="criacao_projeto2" src="https://github.com/user-attachments/assets/f519f1a6-ed4f-4781-9b5b-28a60ea8f41d" />
 
 #### Tela de Gerenciamento de Projetos do Aluno
 
-<img width="1368" height="744" alt="gerencia_projetos_aluno" src="https://github.com/user-attachments/assets/e56ef3b3-944b-4daa-939e-91ba4b7c196c" />
+<img width="1368" height="744" alt="gerencia_projetos_aluno" src="https://github.com/user-attachments/assets/e0cd0a76-30e1-4e03-8eed-3b306171ab6e" />
 
 #### Tela de Rotulagem das Imagens
 
-<img width="1373" height="734" alt="rotula_imagem" src="https://github.com/user-attachments/assets/01270730-cd22-49a9-90fb-9537c0f1872d" />
+<img width="1373" height="734" alt="rotula_imagem" src="https://github.com/user-attachments/assets/0a2329f4-e4ff-4ec8-a2dc-775318f17238" />
 
 ### Decisões e Alternativas Consideradas
 
@@ -170,28 +167,42 @@ A arquitetura segue o padrão MVC (Model-View-Controller) com as seguintes camad
 
 ### Critérios de Escalabilidade, Resiliência e Segurança
 
-- Deploy em ambiente escalável (Docker + Render ou Railway).
-- Banco de dados com backup automático e controle de versão.
-- Controle de acesso baseado em função (professor/aluno).
-- Criptografia de senhas com bcrypt.
-- Validação de entrada e sanitização de dados conforme OWASP Top 10.
+- Infraestrutura Escalável: Utilização do Supabase como plataforma de backend gerenciado, permitindo escalabilidade automática dos serviços de autenticação, banco de dados e armazenamento de arquivos conforme o crescimento da aplicação.
+- Hospedagem da Aplicação: Deploy da interface web utilizando plataformas modernas compatíveis com Next.js, garantindo alta disponibilidade e facilidade de manutenção.
+- Persistência e Recuperação de Dados: Banco de dados PostgreSQL gerenciado pelo Supabase, com mecanismos de backup, replicação e recuperação fornecidos pela plataforma.
+- Controle de Acesso Baseado em Papéis (RBAC): Separação das permissões entre professores e alunos, garantindo que cada perfil tenha acesso apenas às funcionalidades permitidas.
+- Autenticação Segura: Gerenciamento de usuários realizado pelo Supabase Auth, utilizando práticas modernas de autenticação e armazenamento seguro de credenciais.
+- Segurança de Dados: Aplicação de políticas de acesso aos dados por meio de Row Level Security (RLS), restringindo a visualização e modificação de registros conforme o perfil e participação do usuário nos projetos.
+- Validação de Entradas: Verificação e tratamento dos dados recebidos pela aplicação para reduzir inconsistências e prevenir falhas de segurança.
+- Proteção Contra Vulnerabilidades: Desenvolvimento alinhado às recomendações da OWASP, buscando mitigar riscos relacionados a controle de acesso inadequado, exposição de dados sensíveis e ataques de injeção.
+- Armazenamento Seguro de Arquivos: Utilização do Supabase Storage para gerenciamento das imagens dos projetos, com controle de acesso e organização dos arquivos por projeto.
 
 ## 3.3 Stack Tecnológica
 
-| Categoria          | Tecnologia              | Justificativa                                          |
-| :----------------- | :---------------------- | :----------------------------------------------------- |
-| Linguagem Backend  | **Node.js**             | Simplicidade e ampla integração com bibliotecas de IA. |
-| Frontend           | **ReactJS**             | Framework moderno, responsivo e eficiente.             |
-| Banco de Dados     | **PostgreSQL**          | Confiável, open source e robusto.                      |
-| Armazenamento      | **AWS S3 / Cloudinary** | Gerenciamento de imagens e escalabilidade.             |
-| Controle de Versão | **Git + GitHub**        | Colaboração e versionamento.                           |
-| IDE                | **VS Code**             | Leve, multiplataforma e produtiva.                     |
-| Design             | **Figma**               | Criação de mockups interativos.                        |
-| Hospedagem         | **Render / Railway**    | Deploy gratuito e escalável para MVP.                  |
+| Categoria                    | Tecnologia                          | Justificativa |
+| :---------------------------- | :---------------------------------- | :------------ |
+| Linguagem de Programação      | **JavaScript / TypeScript**         | Desenvolvimento moderno de aplicações web com tipagem opcional e ampla comunidade. |
+| Framework Frontend            | **Next.js (React)**                 | Framework React que oferece roteamento baseado em arquivos, renderização otimizada e excelente experiência de desenvolvimento. |
+| Biblioteca de Interface       | **React**                           | Construção de interfaces reutilizáveis, componentizadas e responsivas. |
+| Backend as a Service (BaaS)   | **Supabase**                        | Centraliza autenticação, banco de dados, armazenamento de arquivos e APIs em uma única plataforma. |
+| Banco de Dados                | **PostgreSQL (Supabase Database)**  | Banco relacional robusto, confiável e amplamente utilizado em aplicações escaláveis. |
+| Autenticação                  | **Supabase Auth**                   | Gerenciamento seguro de usuários, sessões e controle de acesso baseado em perfis. |
+| Armazenamento de Arquivos     | **Supabase Storage**                | Armazenamento e gerenciamento das imagens utilizadas nos projetos de rotulagem. |
+| Controle de Versão            | **Git + GitHub**                    | Rastreamento de alterações, colaboração entre desenvolvedores e gerenciamento do código-fonte. |
+| Ambiente de Desenvolvimento   | **Visual Studio Code (VS Code)**    | IDE leve, extensível e amplamente utilizada no desenvolvimento web moderno. |
+| Prototipação e Design         | **Figma**                           | Criação de protótipos, wireframes e interfaces antes da implementação. |
+| Hospedagem da Aplicação       | **Vercel**                          | Plataforma otimizada para aplicações Next.js, com integração contínua e deploy simplificado. |
+| Biblioteca de Ícones          | **Lucide React**                    | Conjunto de ícones modernos e consistentes para a interface da aplicação. |
 
 Licenciamento:
 
-- Todas as tecnologias são open source (MIT, Apache 2.0, ou equivalentes).
+<p align="justify">
+  &emsp;As principais tecnologias utilizadas no desenvolvimento do Label4Learn possuem licenças permissivas e amplamente adotadas pela indústria de software, incluindo MIT, Apache 2.0, ISC e PostgreSQL License. Essas licenças permitem uso acadêmico, modificação e distribuição do software.
+</p>
+
+<p align="justify">
+  &emsp;Algumas ferramentas de apoio ao desenvolvimento, como o Figma, são disponibilizadas sob licenças proprietárias com planos gratuitos para fins educacionais e de prototipação.
+</p>
 
 ## 3.4 Considerações de Segurança
 
