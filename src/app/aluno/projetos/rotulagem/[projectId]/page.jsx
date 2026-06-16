@@ -39,7 +39,6 @@ const LabelingInterface = () => {
       data: { user },
     } = await supabase.auth.getUser();
 
-    console.log("user", user);
     setCurrentUser(user);
   };
 
@@ -83,8 +82,6 @@ const LabelingInterface = () => {
       )
       .eq("id", projectId)
       .single();
-
-    console.log("projectId", projectId);
 
     if (error) {
       console.log(error);
@@ -143,7 +140,6 @@ const LabelingInterface = () => {
   };
 
   useEffect(() => {
-    console.log("currentUser", currentUser);
     if (!currentUser) return;
     const loadProject = async () => {
       await fetchProject();
@@ -200,6 +196,14 @@ const LabelingInterface = () => {
     );
 
     if (existingAnnotation) {
+      if (existingAnnotation.label_id === selectedLabel) {
+        if (currentImageIndex < totalImages - 1) {
+          nextImage();
+        }
+
+        return;
+      }
+
       const { error } = await supabase
         .from("annotations")
         .update({
@@ -219,13 +223,17 @@ const LabelingInterface = () => {
       return;
     }
 
-    const { error } = await supabase.from("annotations").insert([
-      {
-        image_id: currentImage.id,
-        label_id: selectedLabel,
-        user_id: currentUser.id,
-      },
-    ]);
+    const { data: insertedAnnotation, error } = await supabase
+      .from("annotations")
+      .insert([
+        {
+          image_id: currentImage.id,
+          label_id: selectedLabel,
+          user_id: currentUser.id,
+        },
+      ])
+      .select()
+      .single();
 
     if (error) {
       console.log(error);
@@ -239,13 +247,7 @@ const LabelingInterface = () => {
 
         return {
           ...img,
-          annotations: [
-            ...img.annotations,
-            {
-              user_id: currentUser.id,
-              label_id: selectedLabel,
-            },
-          ],
+          annotations: [...img.annotations, insertedAnnotation],
         };
       }),
     );
