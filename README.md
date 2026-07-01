@@ -181,7 +181,7 @@ A arquitetura é composta pelas seguintes camadas:
 
 | Categoria                    | Tecnologia                          | Justificativa |
 | :---------------------------- | :---------------------------------- | :------------ |
-| Linguagem de Programação      | **JavaScript / TypeScript**         | Desenvolvimento moderno de aplicações web com tipagem opcional e ampla comunidade. |
+| Linguagem de Programação      | **JavaScript**         | Desenvolvimento moderno de aplicações web com tipagem opcional e ampla comunidade. |
 | Framework Frontend            | **Next.js (React)**                 | Framework React que oferece roteamento baseado em arquivos, renderização otimizada e excelente experiência de desenvolvimento. |
 | Biblioteca de Interface       | **React**                           | Construção de interfaces reutilizáveis, componentizadas e responsivas. |
 | Backend as a Service (BaaS)   | **Supabase**                        | Centraliza autenticação, banco de dados, armazenamento de arquivos e APIs em uma única plataforma. |
