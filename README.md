@@ -78,7 +78,7 @@ Data de Entrega: 29/10/2025<br>
 
 | Código | Descrição                                                                            | Categoria        |
 | :----- | :----------------------------------------------------------------------------------- | :--------------- |
-| RNF01  | A aplicação deve ser acessível via navegador web responsivo.                         | Usabilidade      |
+| RNF01  | A aplicação deve ser acessível via navegador web desktop, sem responsividade para smartphones.                         | Usabilidade      |
 | RNF02  | O sistema deve suportar ao menos 50 usuários simultâneos.                            | Desempenho       |
 | RNF03  | As imagens e rótulos devem ser armazenados em banco de dados seguro e versionado.    | Segurança        |
 | RNF04  | As ações críticas (criação, edição, exclusão de projetos) devem exigir autenticação. | Segurança        |
